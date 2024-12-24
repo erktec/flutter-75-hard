@@ -21,14 +21,37 @@ class Greetings extends StatelessWidget {
         ClipRRect(
           borderRadius: BorderRadius.circular(10),
           child: imageUrl.isNotEmpty
-              ? SvgPicture.network(
-                  imageUrl,
-                  height: 60,
-                  placeholderBuilder: (BuildContext context) => const Icon(
-                    Icons.person,
-                    size: 60,
-                    color: Colors.grey,
-                  ),
+              ? FutureBuilder<bool>(
+                  future: _isValidImageUrl(imageUrl),
+                  builder: (context, snapshot) {
+                    if (snapshot.connectionState == ConnectionState.waiting) {
+                      return const Icon(
+                        Icons.person,
+                        size: 60,
+                        color: Colors.grey,
+                      );
+                    }
+                    if (snapshot.hasData && snapshot.data == true) {
+                      return SvgPicture.network(
+                        imageUrl,
+                        height: 60,
+                        width: 60,
+                        fit: BoxFit.cover,
+                        placeholderBuilder: (BuildContext context) =>
+                            const Icon(
+                          Icons.person,
+                          size: 60,
+                          color: Colors.grey,
+                        ),
+                      );
+                    } else {
+                      return const Icon(
+                        Icons.person,
+                        size: 60,
+                        color: Colors.grey,
+                      );
+                    }
+                  },
                 )
               : const Icon(
                   Icons.person,
@@ -43,7 +66,8 @@ class Greetings extends StatelessWidget {
             const Text("Hello", style: TextStyle(fontSize: 18)),
             Text(
               username,
-              style: const TextStyle(fontSize: 28, fontWeight: FontWeight.bold),
+              style: const TextStyle(
+                  fontSize: 28, fontWeight: FontWeight.bold),
             ),
           ],
         ),
@@ -55,10 +79,20 @@ class Greetings extends StatelessWidget {
               borderRadius: BorderRadius.circular(10)),
           child: Text(
             'Day: $day/75',
-            style: const TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+            style: const TextStyle(
+                fontSize: 20, fontWeight: FontWeight.bold),
           ),
         ),
       ],
     );
+  }
+
+  Future<bool> _isValidImageUrl(String url) async {
+    try {
+      final response = await Uri.tryParse(url)?.resolve('').toString();
+      return response != null && response.isNotEmpty;
+    } catch (e) {
+      return false;
+    }
   }
 }
