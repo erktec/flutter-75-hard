@@ -17,7 +17,8 @@ class Utils {
       'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Inhsb3lwenRla2N3dm1sY2FhY3huIiwicm9sZSI6ImFub24iLCJpYXQiOjE3MzQ5OTE1OTgsImV4cCI6MjA1MDU2NzU5OH0.zwJoqIf9XBMoZ7nmuNoSa6pBe7ZCHAGxxvmaXdt5sHo';
 
   static const String notificationMessage =
-      "Get ready for the 75 Hard Challenge! Stay motivated, focused, and disciplined. Drink water,exercise, eat healthy, and read daily. Reflect on your progress and push yourself to new limits. Let's do this!";
+      "Get ready for the 75 Hard Challenge! Stay motivated, focused, and disciplined. Drink water, exercise, eat healthy, and read daily. Reflect on your progress and push yourself to new limits. Let's do this!";
+  
   static showToast(String text) {
     Fluttertoast.showToast(
       msg: text,
@@ -78,7 +79,8 @@ class Utils {
     await prefs.setInt('currentDay', nextDay);
     await prefs.setBool('isDeleted', isDeleted);
     await prefs.remove("diet");
-    await prefs.remove("workout");
+    await prefs.remove("workout1");
+    await prefs.remove("workout2");
     await prefs.remove("picture");
     await prefs.remove("water");
     await prefs.remove("reading");
@@ -89,7 +91,8 @@ class Utils {
     await prefs.reload();
     final int currentDay = prefs.getInt('currentDay') ?? 1;
     final double diet = prefs.getDouble('diet') ?? 0.0;
-    final double workout = prefs.getDouble('workout') ?? 0.0;
+    final double workout1 = prefs.getDouble('workout1') ?? 0.0;
+    final double workout2 = prefs.getDouble('workout2') ?? 0.0;
     final double picture = prefs.getDouble('picture') ?? 0.0;
     final double water = prefs.getDouble('water') ?? 0.0;
     final double reading = prefs.getDouble('reading') ?? 0.0;
@@ -99,7 +102,8 @@ class Utils {
     return {
       'currentDay': currentDay,
       'diet': diet,
-      'workout': workout,
+      'workout1': workout1,
+      'workout2': workout2,
       'picture': picture,
       'water': water,
       'reading': reading,
@@ -135,7 +139,8 @@ class Utils {
 
     if (preferences['defaultPenalty']) {
       if (preferences['diet'] == 0.0 ||
-          preferences['workout'] == 0.0 ||
+          preferences['workout1'] == 0.0 ||
+          preferences['workout2'] == 0.0 ||
           preferences['picture'] == 0.0 ||
           preferences['water'] == 0.0 ||
           preferences['reading'] == 0.0) {
@@ -149,7 +154,8 @@ class Utils {
         await sqfliteServices.insertData(
             preferences['currentDay'],
             preferences['diet'],
-            preferences['workout'],
+            preferences['workout1'],
+            preferences['workout2'],
             preferences['picture'],
             preferences['water'],
             preferences['reading']);
@@ -163,7 +169,8 @@ class Utils {
       await sqfliteServices.insertData(
           preferences['currentDay'],
           preferences['diet'],
-          preferences['workout'],
+          preferences['workout1'],
+          preferences['workout2'],
           preferences['picture'],
           preferences['water'],
           preferences['reading']);

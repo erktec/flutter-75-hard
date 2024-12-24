@@ -93,7 +93,7 @@ class _HomeScreenState extends State<HomeScreen> {
                     day: progressProvider.day.toString(),
                   ),
                   const SizedBox(height: 10),
-                  const QuotesCard(), // QuotesCard handles empty quotes gracefully
+                  const QuotesCard(),
                   RuleCard(
                     icon: const Icon(
                       Icons.restaurant_outlined,
@@ -128,23 +128,51 @@ class _HomeScreenState extends State<HomeScreen> {
                       color: Colors.red,
                     ),
                     bgColor: Colors.red,
-                    title: "45-minute workout",
-                    status: progressProvider.workout,
+                    title: "Workout 1",
+                    status: progressProvider.workout1,
+                    onTap: () {
+                      Utils.navigateTo(
+                        context,
+                        ProgressScreen(
+                          appBarTitle: "Workout 1",
+                          icon: Icons.directions_run_outlined,
+                          tip: 'Do a 45-minute workout.',
+                          unit: 0.0222222222222222,
+                          progress: progressProvider.workout1,
+                          goal: 45,
+                          progressColor: Colors.red,
+                          onPressed: (double value) {
+                            progressProvider.setWorkout1(value);
+                            _updateProgress('workout1', value);
+                          },
+                        ),
+                      );
+                    },
+                  ),
+                  RuleCard(
+                    icon: const Icon(
+                      Icons.fitness_center_outlined,
+                      size: 45,
+                      color: Colors.purple,
+                    ),
+                    bgColor: Colors.purple,
+                    title: "Workout 2",
+                    status: progressProvider.workout2,
                     onTap: () {
                       Utils.navigateTo(
                           context,
                           ProgressScreen(
-                            appBarTitle: "Workout",
-                            icon: Icons.directions_run_outlined,
+                            appBarTitle: "Workout 2",
+                            icon: Icons.fitness_center_outlined,
                             tip:
-                                'Do a 45-minute workout, it can be anything. Just move your body in a way that makes you sweat.',
+                                'Complete another 45-minute workout. This can be indoors or outdoors.',
                             unit: 0.0222222222222222,
-                            progress: progressProvider.workout,
+                            progress: progressProvider.workout2,
                             goal: 45,
-                            progressColor: Colors.red,
+                            progressColor: Colors.purple,
                             onPressed: (double value) => {
-                              progressProvider.setWorkout(value),
-                              _updateProgress('workout', value)
+                              progressProvider.setWorkout2(value),
+                              _updateProgress('workout2', value)
                             },
                           ));
                     },
@@ -247,7 +275,8 @@ class _HomeScreenState extends State<HomeScreen> {
             diet: preferences['diet'],
             reading: preferences['reading'],
             picture: preferences['picture'],
-            workout: preferences['workout'],
+            workout1: preferences['workout1'],
+            workout2: preferences['workout2'],
             water: preferences['water']);
 
     (preferences['isDeleted'])

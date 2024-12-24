@@ -16,7 +16,8 @@ class SqfliteServices {
   static const String _columnId = 'id';
   static const String _columnDay = 'day';
   static const String _columnDiet = 'diet';
-  static const String _columnWorkout = 'workout';
+  static const String _columnWorkout1 = 'workout1';
+  static const String _columnWorkout2 = 'workout2';
   static const String _columnPicture = 'picture';
   static const String _columnWater = 'water';
   static const String _columnReading = 'reading';
@@ -41,7 +42,8 @@ class SqfliteServices {
             $_columnId INTEGER PRIMARY KEY AUTOINCREMENT,
             $_columnDay INTEGER NOT NULL,
             $_columnDiet REAL NOT NULL,
-            $_columnWorkout REAL NOT NULL,
+            $_columnWorkout1 REAL NOT NULL,
+            $_columnWorkout2 REAL NOT NULL,
             $_columnPicture REAL NOT NULL,
             $_columnWater REAL NOT NULL,
             $_columnReading REAL NOT NULL
@@ -51,14 +53,15 @@ class SqfliteServices {
     );
   }
 
-  Future<int> insertData(int day, double diet, double workout, double picture,
-      double water, double reading) async {
+  Future<int> insertData(int day, double diet, double workout1, double workout2,
+      double picture, double water, double reading) async {
     final Database db = await database;
 
     final Map<String, dynamic> data = {
       _columnDay: day,
       _columnDiet: diet,
-      _columnWorkout: workout,
+      _columnWorkout1: workout1,
+      _columnWorkout2: workout2,
       _columnPicture: picture,
       _columnWater: water,
       _columnReading: reading,
@@ -86,13 +89,14 @@ class SqfliteServices {
     );
   }
 
-  Future<int> updateDataByDay(int day, double diet, double workout,
-      double picture, double water, double reading) async {
+  Future<int> updateDataByDay(int day, double diet, double workout1,
+      double workout2, double picture, double water, double reading) async {
     final Database db = await database;
 
     final Map<String, dynamic> data = {
       _columnDiet: diet,
-      _columnWorkout: workout,
+      _columnWorkout1: workout1,
+      _columnWorkout2: workout2,
       _columnPicture: picture,
       _columnWater: water,
       _columnReading: reading,

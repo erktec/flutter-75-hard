@@ -52,7 +52,8 @@ class _SplashScreenState extends State<SplashScreen> {
         diet: preferences['diet'],
         reading: preferences['reading'],
         picture: preferences['picture'],
-        workout: preferences['workout'],
+        workout1: preferences['workout1'],
+        workout2: preferences['workout2'],
         water: preferences['water'],
       );
     } catch (e) {

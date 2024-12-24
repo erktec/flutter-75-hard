@@ -140,7 +140,8 @@ class _LoginScreenState extends State<LoginScreen> {
     final SharedPreferences prefs = await SharedPreferences.getInstance();
     final int currentDay = prefs.getInt('currentDay') ?? 1;
     final double diet = prefs.getDouble('diet') ?? 0.0;
-    final double workout = prefs.getDouble('workout') ?? 0.0;
+    final double workout1 = prefs.getDouble('workout1') ?? 0.0;
+    final double workout2 = prefs.getDouble('workout2') ?? 0.0;
     final double picture = prefs.getDouble('picture') ?? 0.0;
     final double water = prefs.getDouble('water') ?? 0.0;
     final double reading = prefs.getDouble('reading') ?? 0.0;
@@ -151,7 +152,8 @@ class _LoginScreenState extends State<LoginScreen> {
       diet: diet,
       reading: reading,
       picture: picture,
-      workout: workout,
+      workout1: workout1,
+      workout2: workout2,
       water: water,
     );
   }
