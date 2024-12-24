@@ -19,16 +19,32 @@ class Greetings extends StatelessWidget {
     return Row(
       children: [
         ClipRRect(
-            borderRadius: BorderRadius.circular(10),
-            child: SvgPicture.network(height: 60, imageUrl)),
+          borderRadius: BorderRadius.circular(10),
+          child: imageUrl.isNotEmpty
+              ? SvgPicture.network(
+                  imageUrl,
+                  height: 60,
+                  placeholderBuilder: (BuildContext context) => const Icon(
+                    Icons.person,
+                    size: 60,
+                    color: Colors.grey,
+                  ),
+                )
+              : const Icon(
+                  Icons.person,
+                  size: 60,
+                  color: Colors.grey,
+                ),
+        ),
         const SizedBox(width: 15),
         Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             const Text("Hello", style: TextStyle(fontSize: 18)),
-            Text(username,
-                style:
-                    const TextStyle(fontSize: 28, fontWeight: FontWeight.bold)),
+            Text(
+              username,
+              style: const TextStyle(fontSize: 28, fontWeight: FontWeight.bold),
+            ),
           ],
         ),
         const Spacer(),
