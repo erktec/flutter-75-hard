@@ -17,6 +17,9 @@ class _SignUpScreenState extends State<SignUpScreen> {
   final TextEditingController emailController = TextEditingController();
   final TextEditingController passwordController = TextEditingController();
   final TextEditingController usernameController = TextEditingController();
+  final FocusNode emailFocusNode = FocusNode();
+  final FocusNode passwordFocusNode = FocusNode();
+  final FocusNode usernameFocusNode = FocusNode();
   SupabaseServices supabaseServices = SupabaseServices.instance;
 
   @override
@@ -24,64 +27,76 @@ class _SignUpScreenState extends State<SignUpScreen> {
     emailController.dispose();
     passwordController.dispose();
     usernameController.dispose();
+    emailFocusNode.dispose();
+    passwordFocusNode.dispose();
+    usernameFocusNode.dispose();
     super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      body: SingleChildScrollView(
-        child: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 16.0),
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              const SizedBox(height: 90),
-              Image.asset('assets/images/Landscape.png',
-                  width: 400, height: 200),
-              const SizedBox(height: 16),
-              InputField(
-                controller: usernameController,
-                label: 'Username',
-                isPasswordField: false,
-              ),
-              const SizedBox(height: 16),
-              InputField(
-                controller: emailController,
-                label: 'Email',
-                isPasswordField: false,
-              ),
-              const SizedBox(height: 16),
-              InputField(
-                controller: passwordController,
-                label: 'Password',
-                isPasswordField: true,
-              ),
-              const SizedBox(height: 16),
-              PrimaryButton(
-                isLoading: isLoading,
-                onPressed: signUp,
-                title: 'SignUp',
-              ),
-              const SizedBox(height: 16),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  const Text(
-                    "Already have an account? ",
-                    style: TextStyle(color: Colors.white, fontSize: 16),
-                  ),
-                  InkWell(
-                    onTap: () => Utils.navigateTo(context, const LoginScreen()),
-                    child: const Text(
-                      "SignIn",
-                      style: TextStyle(
-                          color: AppColors.primaryColor, fontSize: 16),
+    return GestureDetector(
+      onTap: () {
+        FocusScope.of(context).unfocus(); // Dismiss keyboard when tapping outside
+      },
+      child: Scaffold(
+        body: SingleChildScrollView(
+          child: Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 16.0),
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                const SizedBox(height: 90),
+                Image.asset('assets/images/Landscape.png', width: 400, height: 200),
+                const SizedBox(height: 16),
+                InputField(
+                  focusNode: usernameFocusNode,
+                  controller: usernameController,
+                  label: 'Username',
+                  isPasswordField: false,
+                ),
+                const SizedBox(height: 16),
+                InputField(
+                  focusNode: emailFocusNode,
+                  controller: emailController,
+                  label: 'Email',
+                  isPasswordField: false,
+                ),
+                const SizedBox(height: 16),
+                InputField(
+                  focusNode: passwordFocusNode,
+                  controller: passwordController,
+                  label: 'Password',
+                  isPasswordField: true,
+                ),
+                const SizedBox(height: 16),
+                PrimaryButton(
+                  isLoading: isLoading,
+                  onPressed: signUp,
+                  title: 'SignUp',
+                ),
+                const SizedBox(height: 16),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    const Text(
+                      "Already have an account? ",
+                      style: TextStyle(color: Colors.white, fontSize: 16),
                     ),
-                  ),
-                ],
-              )
-            ],
+                    InkWell(
+                      onTap: () => Utils.navigateTo(context, const LoginScreen()),
+                      child: const Text(
+                        "SignIn",
+                        style: TextStyle(
+                          color: AppColors.primaryColor,
+                          fontSize: 16,
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+              ],
+            ),
           ),
         ),
       ),

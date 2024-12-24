@@ -7,28 +7,41 @@ class NotificationService {
       FlutterLocalNotificationsPlugin();
 
   Future<void> initNotification() async {
-    AndroidInitializationSettings initializationSettingsAndroid =
-        const AndroidInitializationSettings('ic_launcher');
+    const AndroidInitializationSettings initializationSettingsAndroid =
+        AndroidInitializationSettings('ic_launcher');
 
-    var initializationSettingsIOS = DarwinInitializationSettings(
-        requestAlertPermission: true,
-        requestBadgePermission: true,
-        requestSoundPermission: true,
-        onDidReceiveLocalNotification:
-            (int id, String? title, String? body, String? payload) async {});
+    final DarwinInitializationSettings initializationSettingsIOS =
+        DarwinInitializationSettings(
+      requestAlertPermission: true,
+      requestBadgePermission: true,
+      requestSoundPermission: true,
+    );
 
-    var initializationSettings = InitializationSettings(
-        android: initializationSettingsAndroid, iOS: initializationSettingsIOS);
-    await notificationsPlugin.initialize(initializationSettings,
-        onDidReceiveNotificationResponse:
-            (NotificationResponse notificationResponse) async {});
+    final InitializationSettings initializationSettings =
+        InitializationSettings(
+      android: initializationSettingsAndroid,
+      iOS: initializationSettingsIOS,
+    );
+
+    await notificationsPlugin.initialize(
+      initializationSettings,
+      onDidReceiveNotificationResponse:
+          (NotificationResponse notificationResponse) async {
+        // Handle notification response here
+      },
+    );
   }
 
-  notificationDetails() {
+  NotificationDetails notificationDetails() {
     return const NotificationDetails(
-        android: AndroidNotificationDetails('75', '75Hard',
-            importance: Importance.max),
-        iOS: DarwinNotificationDetails());
+      android: AndroidNotificationDetails(
+        '75',
+        '75Hard',
+        importance: Importance.max,
+        priority: Priority.high,
+      ),
+      iOS: DarwinNotificationDetails(),
+    );
   }
 
   Future<void> showNotification(String progressText) async {
@@ -40,10 +53,12 @@ class NotificationService {
       priority: Priority.high,
       styleInformation: BigTextStyleInformation(''),
     );
+
     const NotificationDetails notificationDetails =
         NotificationDetails(android: androidNotificationDetails);
+
     await notificationsPlugin.show(
-      76,
+      76, // Notification ID
       '75 Hard',
       "Progress updated: $progressText",
       notificationDetails,
@@ -61,14 +76,17 @@ class NotificationService {
       priority: Priority.high,
       styleInformation: BigTextStyleInformation(''),
     );
+
     const NotificationDetails notificationDetails =
         NotificationDetails(android: androidNotificationDetails);
+
     await notificationsPlugin.periodicallyShow(
-      75,
+      75, // Notification ID
       '75 Hard',
       Utils.notificationMessage,
       RepeatInterval.hourly,
       notificationDetails,
+      androidScheduleMode: AndroidScheduleMode.exact, // Added required parameter
     );
   }
 }

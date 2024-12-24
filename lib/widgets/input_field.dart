@@ -5,17 +5,22 @@ class InputField extends StatelessWidget {
   final String label;
   final bool isPasswordField;
   final TextEditingController controller;
-  const InputField(
-      {super.key,
-      required this.label,
-      required this.controller,
-      required this.isPasswordField});
+  final FocusNode? focusNode; // Add FocusNode support
+
+  const InputField({
+    super.key,
+    required this.label,
+    required this.controller,
+    required this.isPasswordField,
+    this.focusNode, // Accept FocusNode as an optional parameter
+  });
 
   @override
   Widget build(BuildContext context) {
     return TextField(
       controller: controller,
       obscureText: isPasswordField,
+      focusNode: focusNode, // Attach the FocusNode
       cursorColor: AppColors.white,
       decoration: InputDecoration(
         labelText: label,
@@ -30,6 +35,10 @@ class InputField extends StatelessWidget {
           borderSide: BorderSide(width: 2, color: AppColors.primaryColor),
         ),
       ),
+      onTap: () {
+        // Debug log for interaction
+        print('$label field tapped');
+      },
     );
   }
 }

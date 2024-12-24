@@ -1,9 +1,9 @@
 // ignore_for_file: use_build_context_synchronously
 
+import 'dart:developer'; // Import this for the `log` method.
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:seventy_five_hard/providers/progress_provider.dart';
-
 import 'package:seventy_five_hard/screens/home_screen.dart';
 import 'package:seventy_five_hard/utils/utils.dart';
 import 'package:seventy_five_hard/models/user_model.dart';
@@ -90,6 +90,7 @@ class _LoginScreenState extends State<LoginScreen> {
       Utils.showToast('Please fill all the fields');
       return;
     }
+
     UserProvider userProvider = Provider.of(context, listen: false);
     final SharedPreferences prefs = await SharedPreferences.getInstance();
     bool defaultPenalty = prefs.getBool('defaultPenalty') ?? true;
@@ -97,27 +98,45 @@ class _LoginScreenState extends State<LoginScreen> {
     setState(() {
       isLoading = true;
     });
-    final response = await supabaseServices.login(
-        email: emailController.text, password: passwordController.text);
-    if (response.containsKey("username")) {
-      userProvider.setUser(
-        User(
+
+    try {
+      final response = await supabaseServices.login(
+        email: emailController.text,
+        password: passwordController.text,
+      );
+
+      log('Login Response: $response'); // Log the response for debugging
+
+      if (response.isNotEmpty && response.containsKey("username")) {
+        userProvider.setUser(
+          User(
             username: response["username"],
             email: response["email"],
-            imageUrl: response["imageUrl"]),
-      );
-      userProvider.setDefaultPenalty(defaultPenalty);
-      _setProgress();
-      Utils.navigateTo(context, const HomeScreen(), replace: true);
+            imageUrl: response["imageUrl"],
+          ),
+        );
+        userProvider.setDefaultPenalty(defaultPenalty);
+
+        await _setProgress();
+        Utils.showToast('Login successful!');
+        Utils.navigateTo(context, const HomeScreen(), replace: true);
+
+        emailController.clear();
+        passwordController.clear();
+      } else {
+        Utils.showToast('Invalid email or password. Please try again.');
+      }
+    } catch (e) {
+      Utils.showToast('Error during login: $e');
+      log('Error: $e'); // Log any error during login
+    } finally {
+      setState(() {
+        isLoading = false;
+      });
     }
-    setState(() {
-      isLoading = false;
-      emailController.clear();
-      passwordController.clear();
-    });
   }
 
-  _setProgress() async {
+  Future<void> _setProgress() async {
     final SharedPreferences prefs = await SharedPreferences.getInstance();
     final int currentDay = prefs.getInt('currentDay') ?? 1;
     final double diet = prefs.getDouble('diet') ?? 0.0;

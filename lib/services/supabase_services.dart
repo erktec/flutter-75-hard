@@ -34,13 +34,13 @@ class SupabaseServices {
         _session = session;
       }
 
-      log('user: ${user!.email}');
-      log('user: ${user.userMetadata}');
+      log('user: ${user?.email}');
+      log('user metadata: ${user?.userMetadata}');
       await supabase.from('users').insert({
-        'username': user.userMetadata!['username'],
-        'email': user.email,
+        'username': user?.userMetadata?['username'],
+        'email': user?.email,
         'image_url':
-            'https://api.dicebear.com/6.x/bottts/svg?seed=${user.userMetadata!['username']}&backgroundColor=FFFFFF'
+            'https://api.dicebear.com/6.x/bottts/svg?seed=${user?.userMetadata?['username']}&backgroundColor=FFFFFF'
       });
 
       response = "success";
@@ -52,9 +52,9 @@ class SupabaseServices {
     return response;
   }
 
-  Future<Map<dynamic, dynamic>> login(
+  Future<Map<String, dynamic>> login(
       {required String email, required String password}) async {
-    final userData = {};
+    final Map<String, dynamic> userData = {};
     try {
       AuthResponse authResponse = await supabase.auth.signInWithPassword(
         email: email,
@@ -62,21 +62,36 @@ class SupabaseServices {
       );
       _session = authResponse.session;
       User? user = authResponse.user;
-      final imageUrl = await getUserAvatar(user!.email!);
-      userData["username"] = user.userMetadata!['username'];
+
+      if (user == null) {
+        log('Login failed: User is null');
+        return userData;
+      }
+
+      final imageUrl = await getUserAvatar(user.email!);
+      userData["username"] = user.userMetadata?['username'] ?? 'Unknown';
       userData["email"] = user.email;
       userData["imageUrl"] = imageUrl;
+
+      log('Login successful: $userData');
     } catch (e) {
-      log('error: $e');
+      log('Login error: $e');
     }
 
     return userData;
   }
 
   Future<String> getUserAvatar(String email) async {
-    final data =
-        await supabase.from('users').select('image_url').eq('email', email);
-    return data[0]["image_url"];
+    try {
+      final data =
+          await supabase.from('users').select('image_url').eq('email', email);
+      if (data.isNotEmpty && data[0]["image_url"] != null) {
+        return data[0]["image_url"];
+      }
+    } catch (e) {
+      log('Error fetching avatar: $e');
+    }
+    return 'https://via.placeholder.com/150';
   }
 
   Future<void> logout() async {

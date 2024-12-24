@@ -16,60 +16,66 @@ class SplashScreen extends StatefulWidget {
 }
 
 class _SplashScreenState extends State<SplashScreen> {
-  bool _redirectCalled = false;
   final supabase = Supabase.instance.client;
 
   @override
-  void didChangeDependencies() {
-    super.didChangeDependencies();
-    _redirect();
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      _redirect();
+    });
   }
 
   Future<void> _redirect() async {
-    await Future.delayed(Duration.zero);
-    if (_redirectCalled || !mounted) {
-      return;
-    }
-
-    _redirectCalled = true;
     final session = supabase.auth.currentSession;
+
     if (session != null) {
-      _setProgress();
-      Utils.navigateTo(context, const HomeScreen(), replace: true);
+      // User is authenticated, set progress and navigate to HomeScreen
+      await _setProgress();
+      if (mounted) {
+        Utils.navigateTo(context, const HomeScreen(), replace: true);
+      }
     } else {
-      Utils.navigateTo(context, const LoginScreen(), replace: true);
+      // No active session, navigate to LoginScreen
+      if (mounted) {
+        Utils.navigateTo(context, const LoginScreen(), replace: true);
+      }
     }
   }
 
-  _setProgress() async {
-    Map<String, dynamic> preferences = await Utils.getPreferences();
-    state_provider.Provider.of<ProgressProvider>(context, listen: false)
-        .setProgress(
-            day: preferences['currentDay'],
-            diet: preferences['diet'],
-            reading: preferences['reading'],
-            picture: preferences['picture'],
-            workout: preferences['workout'],
-            water: preferences['water']);
+  Future<void> _setProgress() async {
+    try {
+      final preferences = await Utils.getPreferences();
+      state_provider.Provider.of<ProgressProvider>(context, listen: false)
+          .setProgress(
+        day: preferences['currentDay'],
+        diet: preferences['diet'],
+        reading: preferences['reading'],
+        picture: preferences['picture'],
+        workout: preferences['workout'],
+        water: preferences['water'],
+      );
+    } catch (e) {
+      debugPrint('Error setting progress: $e');
+    }
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        body: Center(
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          Image.asset('assets/images/Square.png', height: 300),
-          const SizedBox(
-            height: 100,
-          ),
-          const CircularProgressIndicator(
-            strokeWidth: 2,
-            color: AppColors.white,
-          ),
-        ],
+      body: Center(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Image.asset('assets/images/Square.png', height: 300),
+            const SizedBox(height: 100),
+            const CircularProgressIndicator(
+              strokeWidth: 2,
+              color: AppColors.white,
+            ),
+          ],
+        ),
       ),
-    ));
+    );
   }
 }

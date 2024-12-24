@@ -51,6 +51,7 @@ class _HomeScreenState extends State<HomeScreen> {
     final userProvider = state_provider.Provider.of<UserProvider>(context);
     final progressProvider =
         state_provider.Provider.of<ProgressProvider>(context);
+
     return Scaffold(
       appBar: AppBar(
         leading: IconButton(
@@ -81,24 +82,18 @@ class _HomeScreenState extends State<HomeScreen> {
                 color: AppColors.white,
               ),
             )
-          : Padding(
+          : SingleChildScrollView(
               padding: const EdgeInsets.symmetric(horizontal: 16.0),
               child: Column(
                 children: [
                   const SizedBox(height: 5),
-                  profileLoading
-                      ? const Center(
-                          child: CircularProgressIndicator(
-                            strokeWidth: 2,
-                            color: AppColors.white,
-                          ),
-                        )
-                      : Greetings(
-                          username: userProvider.user!.username,
-                          imageUrl: userProvider.user!.imageUrl,
-                          day: progressProvider.day.toString()),
+                  Greetings(
+                    username: userProvider.user?.username ?? 'User',
+                    imageUrl: userProvider.user?.imageUrl ?? '',
+                    day: progressProvider.day.toString(),
+                  ),
                   const SizedBox(height: 10),
-                  const QuotesCard(),
+                  const QuotesCard(), // QuotesCard handles empty quotes gracefully
                   RuleCard(
                     icon: const Icon(
                       Icons.restaurant_outlined,

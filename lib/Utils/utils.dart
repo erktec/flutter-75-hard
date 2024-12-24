@@ -12,9 +12,9 @@ class AppColors {
 }
 
 class Utils {
-  static const String supabaseUrl = 'https://vakxwprknaxjfqiservq.supabase.co';
+  static const String supabaseUrl = 'https://xloypztekcwvmlcaacxn.supabase.co';
   static const String publicAnonKey =
-      'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InZha3h3cHJrbmF4amZxaXNlcnZxIiwicm9sZSI6ImFub24iLCJpYXQiOjE2ODU5NzQxMTEsImV4cCI6MjAwMTU1MDExMX0.MBYwPdun3ORCQaOlMHoZC6tseCPe80FlZBJ5v_nzpeM';
+      'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Inhsb3lwenRla2N3dm1sY2FhY3huIiwicm9sZSI6ImFub24iLCJpYXQiOjE3MzQ5OTE1OTgsImV4cCI6MjA1MDU2NzU5OH0.zwJoqIf9XBMoZ7nmuNoSa6pBe7ZCHAGxxvmaXdt5sHo';
 
   static const String notificationMessage =
       "Get ready for the 75 Hard Challenge! Stay motivated, focused, and disciplined. Drink water,exercise, eat healthy, and read daily. Reflect on your progress and push yourself to new limits. Let's do this!";

@@ -13,54 +13,78 @@ class QuotesCard extends StatefulWidget {
 class _QuotesCardState extends State<QuotesCard> {
   bool quotesLoading = true;
   List<String> quotes = [];
+
   @override
   void initState() {
     super.initState();
     _getQuotes();
   }
 
-  _getQuotes() async {
-    APIServices apiServices = APIServices.instance;
-    quotes = await apiServices.fetchQuotes();
-    setState(() {
-      quotesLoading = false;
-    });
+  Future<void> _getQuotes() async {
+    try {
+      APIServices apiServices = APIServices.instance;
+      final fetchedQuotes = await apiServices.fetchQuotes();
+
+      // Use fallback quotes if API response is empty or null
+      setState(() {
+        quotes = fetchedQuotes.isNotEmpty
+            ? fetchedQuotes
+            : [
+                'Stay focused!',
+                'Keep pushing!',
+                'You can do it!',
+                'Believe in yourself!',
+                'Success is near!'
+              ];
+        quotesLoading = false;
+      });
+    } catch (e) {
+      // Handle errors and provide fallback quotes
+      setState(() {
+        quotes = [
+          'An error occurred.',
+          'Stay strong!',
+          'Keep going!',
+          'Never give up!',
+          'Focus on the goal!'
+        ];
+        quotesLoading = false;
+      });
+    }
   }
 
   @override
   Widget build(BuildContext context) {
     return Container(
-        margin: const EdgeInsets.only(top: 16),
-        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-        width: double.infinity,
-        height: 170,
-        decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(10),
-            color: const Color(0xB6626262),
-            image: const DecorationImage(
-              opacity: 0.4,
-              fit: BoxFit.cover,
-              image: AssetImage(
-                'assets/images/sunrise.jpg',
+      margin: const EdgeInsets.only(top: 16),
+      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+      width: double.infinity,
+      height: 170,
+      decoration: BoxDecoration(
+        borderRadius: BorderRadius.circular(10),
+        color: const Color(0xB6626262),
+        image: const DecorationImage(
+          opacity: 0.4,
+          fit: BoxFit.cover,
+          image: AssetImage('assets/images/sunrise.jpg'),
+        ),
+      ),
+      child: Center(
+        child: quotesLoading
+            ? const CircularProgressIndicator(
+                strokeWidth: 2,
+                color: AppColors.white,
+              )
+            : AnimatedTextKit(
+                repeatForever: true,
+                animatedTexts: quotes
+                    .map((quote) => getQuoteText(quote))
+                    .toList()
+                    .take(5) // Limit to the first 5 quotes for safety
+                    .toList(),
               ),
-            )),
-        child: Center(
-          child: quotesLoading
-              ? const CircularProgressIndicator(
-                  strokeWidth: 2,
-                  color: AppColors.white,
-                )
-              : AnimatedTextKit(
-                  repeatForever: true,
-                  animatedTexts: [
-                    getQuoteText(quotes[0]),
-                    getQuoteText(quotes[1]),
-                    getQuoteText(quotes[2]),
-                    getQuoteText(quotes[3]),
-                    getQuoteText(quotes[4]),
-                  ],
-                ),
-        ));
+      ),
+    );
   }
 
   FadeAnimatedText getQuoteText(String quote) {
@@ -68,7 +92,10 @@ class _QuotesCardState extends State<QuotesCard> {
       quote,
       textAlign: TextAlign.center,
       textStyle: const TextStyle(
-          color: Colors.white, fontSize: 20, fontWeight: FontWeight.w600),
+        color: Colors.white,
+        fontSize: 20,
+        fontWeight: FontWeight.w600,
+      ),
     );
   }
 }
