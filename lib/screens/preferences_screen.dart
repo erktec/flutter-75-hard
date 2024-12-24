@@ -14,7 +14,7 @@ class PreferencesScreen extends StatefulWidget {
 }
 
 class _PreferencesScreenState extends State<PreferencesScreen> {
-  bool? defaultPenalty = false;
+  bool defaultPenalty = false; // Ensure a non-null initial value
   bool isLoading = true;
 
   @override
@@ -28,7 +28,7 @@ class _PreferencesScreenState extends State<PreferencesScreen> {
         Provider.of<UserProvider>(context, listen: false);
     setState(() {
       isLoading = false;
-      defaultPenalty = userProvider.defaultPenalty;
+      defaultPenalty = userProvider.defaultPenalty ?? false; // Handle null case
     });
   }
 
@@ -47,9 +47,10 @@ class _PreferencesScreenState extends State<PreferencesScreen> {
       body: isLoading
           ? const Center(
               child: CircularProgressIndicator(
-              strokeWidth: 2,
-              color: AppColors.white,
-            ))
+                strokeWidth: 2,
+                color: AppColors.white,
+              ),
+            )
           : Padding(
               padding: const EdgeInsets.symmetric(horizontal: 16.0),
               child: Column(
@@ -62,7 +63,7 @@ class _PreferencesScreenState extends State<PreferencesScreen> {
                         style: TextStyle(
                             fontSize: 20, fontWeight: FontWeight.w600),
                       ),
-                      value: defaultPenalty!,
+                      value: defaultPenalty, // No forced unwrapping
                       onChanged: (value) async {
                         setState(() {
                           defaultPenalty = value;
